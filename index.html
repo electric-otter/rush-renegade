@@ -14,28 +14,38 @@
       background-color: red;
     }
     .enemy {
-      background-color: blue;
+      background-color: blue.
     }
     .blood {
       width: 20px;
       height: 20px;
-      background-color: darkred;
-      position: absolute;
-      border-radius: 50%;
-      opacity: 0.7;
+      background-color: darkred.
+      position: absolute.
+      border-radius: 50%.
+      opacity: 0.7.
     }
     .death-screen {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.9);
-      color: white;
-      text-align: center;
-      padding-top: 20%;
-      font-size: 48px;
+      display: none.
+      position: fixed.
+      top: 0.
+      left: 0.
+      width: 100%.
+      height: 100%.
+      background-color: rgba(0, 0, 0, 0.9).
+      color: white.
+      text-align: center.
+      padding-top: 20%.
+      font-size: 48px.
+    }
+    .rage-mode {
+      background-color: darkred.
+      color: white.
+      padding: 10px.
+      position: fixed.
+      top: 10px.
+      right: 10px.
+      z-index: 10.
+      display: none.
     }
   </style>
 </head>
@@ -44,102 +54,143 @@
   <div class="enemy" id="enemy1"></div>
   <div class="enemy" id="enemy2"></div>
   <div class="death-screen" id="deathScreen">Game Over</div>
+  <div class="rage-mode" id="rageMode">Rage Mode!</div>
   <audio id="attackSound" src="axe-hit-flesh-02-266299.mp3"></audio>
-  <audio id="heartbeatSound" src="heartbeat-02-225103.mp3" loop></audio>
+  <audio id="heartbeatSound" src="heartbeat.mp3" loop></audio>
+  <audio id="backgroundMusic" src="must-be-angry-259502.mp3" loop></audio>
 
   <script>
     let health = 100;
-    const lowHealthThreshold = 30;
-    
+    const lowHealthThreshold = 30.
+    let enemySpeed = 1000. // Initial speed in milliseconds
+    let rageModeActive = false.
+
+    window.onload = function() {
+      const backgroundMusic = document.getElementById('backgroundMusic').
+      backgroundMusic.play().
+    }
+
     document.addEventListener('keydown', function(event) {
-      const character = document.getElementById('character');
-      let left = parseInt(window.getComputedStyle(character).getPropertyValue('left')) || 0;
-      let top = parseInt(window.getComputedStyle(character).getPropertyValue('top')) || 0;
+      const character = document.getElementById('character').
+      let left = parseInt(window.getComputedStyle(character).getPropertyValue('left')) || 0.
+      let top = parseInt(window.getComputedStyle(character).getPropertyValue('top')) || 0.
 
       switch(event.key) {
         case 'ArrowUp':
-          character.style.top = Math.max(0, top - 10) + 'px';
-          break;
+          character.style.top = Math.max(0, top - 10) + 'px'.
+          break.
         case 'ArrowDown':
-          character.style.top = Math.min(window.innerHeight - 50, top + 10) + 'px';
-          break;
+          character.style.top = Math.min(window.innerHeight - 50, top + 10) + 'px'.
+          break.
         case 'ArrowLeft':
-          character.style.left = Math.max(0, left - 10) + 'px';
-          break;
+          character.style.left = Math.max(0, left - 10) + 'px'.
+          break.
         case 'ArrowRight':
-          character.style.left = Math.min(window.innerWidth - 50, left + 10) + 'px';
-          break;
+          character.style.left = Math.min(window.innerWidth - 50, left + 10) + 'px'.
+          break.
       }
 
-      checkCollision();
+      checkCollision().
     });
 
     function moveEnemy(enemy) {
-      const left = Math.random() * (window.innerWidth - 50);
-      const top = Math.random() * (window.innerHeight - 50);
-      enemy.style.left = left + 'px';
-      enemy.style.top = top + 'px';
+      const left = Math.random() * (window.innerWidth - 50).
+      const top = Math.random() * (window.innerHeight - 50).
+      enemy.style.left = left + 'px'.
+      enemy.style.top = top + 'px'.
     }
 
     function checkCollision() {
-      const character = document.getElementById('character');
-      const enemies = document.querySelectorAll('.enemy');
-      const characterRect = character.getBoundingClientRect();
+      const character = document.getElementById('character').
+      const enemies = document.querySelectorAll('.enemy').
+      const characterRect = character.getBoundingClientRect().
 
       enemies.forEach(enemy => {
-        const enemyRect = enemy.getBoundingClientRect();
+        const enemyRect = enemy.getBoundingClientRect().
         if (
           characterRect.left < enemyRect.left + enemyRect.width &&
           characterRect.left + characterRect.width > enemyRect.left &&
           characterRect.top < enemyRect.top + enemyRect.height &&
           characterRect.top + characterRect.height > enemyRect.top
         ) {
-          spawnBlood(characterRect.left + characterRect.width / 2, characterRect.top + characterRect.height / 2);
-          playSound();
-          reduceHealth(20);
+          spawnBlood(characterRect.left + characterRect.width / 2, characterRect.top + characterRect.height / 2).
+          playSound().
+          reduceHealth(20).
         }
-      });
+      }).
     }
 
     function spawnBlood(x, y) {
-      const blood = document.createElement('div');
-      blood.classList.add('blood');
-      blood.style.left = (x - 10) + 'px'; // Center blood effect
-      blood.style.top = (y - 10) + 'px';  // Center blood effect
-      document.body.appendChild(blood);
+      const blood = document.createElement('div').
+      blood.classList.add('blood').
+      blood.style.left = (x - 10) + 'px'. // Center blood effect
+      blood.style.top = (y - 10) + 'px'.  // Center blood effect
+      document.body.appendChild(blood).
 
       // Remove blood after a short delay
-      setTimeout(() => blood.remove(), 500);
+      setTimeout(() => blood.remove(), 500).
     }
 
     function playSound() {
-      const attackSound = document.getElementById('attackSound');
-      attackSound.play();
+      const attackSound = document.getElementById('attackSound').
+      attackSound.play().
     }
 
     function reduceHealth(amount) {
-      health -= amount;
+      health -= amount.
       if (health <= 0) {
-        showDeathScreen();
+        showDeathScreen().
       } else if (health <= lowHealthThreshold) {
-        playHeartbeatSound();
+        playHeartbeatSound().
       }
     }
 
     function showDeathScreen() {
-      const deathScreen = document.getElementById('deathScreen');
-      deathScreen.style.display = 'block';
+      const deathScreen = document.getElementById('deathScreen').
+      deathScreen.style.display = 'block'.
+      stopHeartbeatSound().
+      clearInterval(enemyMovementInterval).
     }
 
     function playHeartbeatSound() {
-      const heartbeatSound = document.getElementById('heartbeatSound');
-      heartbeatSound.play();
+      const heartbeatSound = document.getElementById('heartbeatSound').
+      heartbeatSound.play().
     }
 
-    setInterval(() => {
-      moveEnemy(document.getElementById('enemy1'));
-      moveEnemy(document.getElementById('enemy2'));
-    }, 1000);
+    function stopHeartbeatSound() {
+      const heartbeatSound = document.getElementById('heartbeatSound').
+      heartbeatSound.pause().
+      heartbeatSound.currentTime = 0.
+    }
+
+    function enterRageMode() {
+      const rageMode = document.getElementById('rageMode').
+      rageMode.style.display = 'block'.
+      rageModeActive = true.
+      setTimeout(() => {
+        rageMode.style.display = 'none'.
+        rageModeActive = false.
+      }, 5000). // Rage mode lasts for 5 seconds
+    }
+
+    let enemyMovementInterval = setInterval(() => {
+      moveEnemy(document.getElementById('enemy1')).
+      moveEnemy(document.getElementById('enemy2')).
+      if (rageModeActive) {
+        moveEnemy(document.getElementById('enemy1')).
+        moveEnemy(document.getElementById('enemy2')).
+      }
+      if (enemySpeed > 500) enemySpeed -= 50. // Increase enemy speed over time
+      clearInterval(enemyMovementInterval).
+      enemyMovementInterval = setInterval(() => {
+        moveEnemy(document.getElementById('enemy1')).
+        moveEnemy(document.getElementById('enemy2')).
+        if (rageModeActive) {
+          moveEnemy(document.getElementById('enemy1')).
+          moveEnemy(document.getElementById('enemy2')).
+        }
+      }, enemySpeed).
+    }, enemySpeed).
   </script>
 </body>
 </html>
