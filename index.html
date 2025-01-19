@@ -24,15 +24,33 @@
       border-radius: 50%;
       opacity: 0.7;
     }
+    .death-screen {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+      color: white;
+      text-align: center;
+      padding-top: 20%;
+      font-size: 48px;
+    }
   </style>
 </head>
 <body>
   <div class="character" id="character" style="left: 0px; top: 0px;"></div>
   <div class="enemy" id="enemy1"></div>
   <div class="enemy" id="enemy2"></div>
+  <div class="death-screen" id="deathScreen">Game Over</div>
   <audio id="attackSound" src="axe-hit-flesh-02-266299.mp3"></audio>
+  <audio id="heartbeatSound" src="heartbeat-02-225103.mp3" loop></audio>
 
   <script>
+    let health = 100;
+    const lowHealthThreshold = 30;
+    
     document.addEventListener('keydown', function(event) {
       const character = document.getElementById('character');
       let left = parseInt(window.getComputedStyle(character).getPropertyValue('left')) || 0;
@@ -78,6 +96,7 @@
         ) {
           spawnBlood(characterRect.left + characterRect.width / 2, characterRect.top + characterRect.height / 2);
           playSound();
+          reduceHealth(20);
         }
       });
     }
@@ -96,6 +115,25 @@
     function playSound() {
       const attackSound = document.getElementById('attackSound');
       attackSound.play();
+    }
+
+    function reduceHealth(amount) {
+      health -= amount;
+      if (health <= 0) {
+        showDeathScreen();
+      } else if (health <= lowHealthThreshold) {
+        playHeartbeatSound();
+      }
+    }
+
+    function showDeathScreen() {
+      const deathScreen = document.getElementById('deathScreen');
+      deathScreen.style.display = 'block';
+    }
+
+    function playHeartbeatSound() {
+      const heartbeatSound = document.getElementById('heartbeatSound');
+      heartbeatSound.play();
     }
 
     setInterval(() => {
