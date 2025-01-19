@@ -156,7 +156,6 @@
       const deathScreen = document.getElementById('deathScreen');
       deathScreen.style.display = 'block';
       stopHeartbeatSound();
-      clearInterval(enemyMovementInterval);
     }
 
     function playHeartbeatSound() {
@@ -216,22 +215,21 @@
       }, 20);
     }
 
-    let enemyMovementInterval = setInterval(() => {
+    function moveEnemiesForever() {
       moveEnemy(document.getElementById('enemy1'));
       moveEnemy(document.getElementById('enemy2'));
       if (rageModeActive) {
         moveEnemy(document.getElementById('enemy1'));
         moveEnemy(document.getElementById('enemy2'));
       }
+    }
+
+    let enemyMovementInterval = setInterval(() => {
+      moveEnemiesForever();
       if (enemySpeed > 500) enemySpeed -= 50; // Increase enemy speed over time
       clearInterval(enemyMovementInterval);
       enemyMovementInterval = setInterval(() => {
-        moveEnemy(document.getElementById('enemy1'));
-        moveEnemy(document.getElementById('enemy2'));
-        if (rageModeActive) {
-          moveEnemy(document.getElementById('enemy1'));
-          moveEnemy(document.getElementById('enemy2'));
-        }
+        moveEnemiesForever();
       }, enemySpeed);
     }, enemySpeed);
 
