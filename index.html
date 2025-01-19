@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Controllable Game Character with Enemies</title>
+  <title>Controllable Game Character with Enemies and Guns</title>
   <style>
     .character, .enemy {
       width: 50px;
@@ -15,6 +15,12 @@
     }
     .enemy {
       background-color: blue;
+    }
+    .bullet {
+      width: 10px;
+      height: 10px;
+      background-color: black;
+      position: absolute;
     }
     .blood {
       width: 20px;
@@ -88,6 +94,9 @@
         case 'ArrowRight':
           character.style.left = Math.min(window.innerWidth - 50, left + 10) + 'px';
           break;
+        case ' ':
+          shootBullet(left + 25, top + 25); // Shoot bullet from the character's center
+          break;
       }
 
       checkCollision();
@@ -126,9 +135,6 @@
       blood.style.left = (x - 10) + 'px'; // Center blood effect
       blood.style.top = (y - 10) + 'px';  // Center blood effect
       document.body.appendChild(blood);
-
-      // Remove blood after a short delay
-      setTimeout(() => blood.remove(), 500);
     }
 
     function playSound() {
@@ -172,6 +178,42 @@
         rageMode.style.display = 'none';
         rageModeActive = false;
       }, 5000); // Rage mode lasts for 5 seconds
+    }
+
+    function shootBullet(startX, startY) {
+      const bullet = document.createElement('div');
+      bullet.classList.add('bullet');
+      bullet.style.left = startX + 'px';
+      bullet.style.top = startY + 'px';
+      document.body.appendChild(bullet);
+
+      const bulletInterval = setInterval(() => {
+        let bulletLeft = parseInt(window.getComputedStyle(bullet).getPropertyValue('left')) || 0;
+        bullet.style.left = (bulletLeft + 10) + 'px'; // Move bullet to the right
+
+        // Check for bullet collision with enemies
+        const enemies = document.querySelectorAll('.enemy');
+        enemies.forEach(enemy => {
+          const enemyRect = enemy.getBoundingClientRect();
+          const bulletRect = bullet.getBoundingClientRect();
+          if (
+            bulletRect.left < enemyRect.left + enemyRect.width &&
+            bulletRect.left + bulletRect.width > enemyRect.left &&
+            bulletRect.top < enemyRect.top + enemyRect.height &&
+            bulletRect.top + bulletRect.height > enemyRect.top
+          ) {
+            enemy.remove(); // Remove enemy on collision
+            bullet.remove(); // Remove bullet on collision
+            clearInterval(bulletInterval);
+          }
+        });
+
+        // Remove bullet if it goes off screen
+        if (bulletLeft > window.innerWidth) {
+          bullet.remove();
+          clearInterval(bulletInterval);
+        }
+      }, 20);
     }
 
     let enemyMovementInterval = setInterval(() => {
